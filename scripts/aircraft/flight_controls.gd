@@ -26,11 +26,12 @@ var input_smoothing: float = 0.1
 ## 处理键盘输入
 func process_input(delta: float) -> void:
 	# 俯仰控制 (升降舵)
+	# 注意：需要反转方向，W键应该使机头向上（负向旋转）
 	var pitch_input = 0.0
 	if Input.is_action_pressed("pitch_up"):
-		pitch_input += 1.0
+		pitch_input -= 1.0  # W键 - 机头向上（负向旋转）
 	if Input.is_action_pressed("pitch_down"):
-		pitch_input -= 1.0
+		pitch_input += 1.0  # S键 - 机头向下（正向旋转）
 	elevator = lerp(elevator, pitch_input, input_smoothing)
 	
 	# 滚转控制 (副翼)
@@ -42,11 +43,12 @@ func process_input(delta: float) -> void:
 	aileron = lerp(aileron, roll_input, input_smoothing)
 	
 	# 偏航控制 (方向舵)
+	# 注意：需要反转方向，Q键应该使机头向左偏航（负向旋转）
 	var yaw_input = 0.0
 	if Input.is_action_pressed("yaw_left"):
-		yaw_input -= 1.0
+		yaw_input += 1.0  # Q键 - 机头向左（正向旋转，因为Y轴向上）
 	if Input.is_action_pressed("yaw_right"):
-		yaw_input += 1.0
+		yaw_input -= 1.0  # E键 - 机头向右（负向旋转）
 	rudder = lerp(rudder, yaw_input, input_smoothing)
 	
 	# 油门控制

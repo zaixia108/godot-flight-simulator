@@ -1,0 +1,67 @@
+[gd_scene load_steps=7 format=3 uid="uid://bqr7uj5xqnw3d"]
+
+[ext_resource type="PackedScene" uid="uid://dgq6wxh3ybx0v" path="res://scenes/aircraft/aircraft.tscn" id="1_aircraft"]
+[ext_resource type="Script" path="res://scripts/camera/follow_camera.gd" id="2_camera_script"]
+[ext_resource type="PackedScene" uid="uid://c4yvgwx2k7wd8" path="res://scenes/ui/hud.tscn" id="3_hud"]
+
+[sub_resource type="ProceduralSkyMaterial" id="ProceduralSkyMaterial_sky"]
+sky_horizon_color = Color(0.64625, 0.65575, 0.67075, 1)
+ground_horizon_color = Color(0.64625, 0.65575, 0.67075, 1)
+
+[sub_resource type="Sky" id="Sky_sky"]
+sky_material = SubResource("ProceduralSkyMaterial_sky")
+
+[sub_resource type="Environment" id="Environment_env"]
+background_mode = 2
+sky = SubResource("Sky_sky")
+ambient_light_source = 3
+
+[sub_resource type="PlaneMesh" id="PlaneMesh_ground"]
+size = Vector2(10000, 10000)
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_ground"]
+albedo_color = Color(0.2, 0.5, 0.2, 1)
+
+[sub_resource type="BoxShape3D" id="BoxShape3D_ground"]
+size = Vector3(10000, 1, 10000)
+
+[node name="TestWorld" type="Node3D"]
+
+[node name="WorldEnvironment" type="WorldEnvironment" parent="."]
+environment = SubResource("Environment_env")
+
+[node name="DirectionalLight3D" type="DirectionalLight3D" parent="."]
+transform = Transform3D(0.866025, -0.433013, 0.25, 0, 0.5, 0.866025, -0.5, -0.75, 0.433013, 0, 20, 0)
+shadow_enabled = true
+
+[node name="Ground" type="StaticBody3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -0.5, 0)
+
+[node name="MeshInstance3D" type="MeshInstance3D" parent="Ground"]
+mesh = SubResource("PlaneMesh_ground")
+surface_material_override/0 = SubResource("StandardMaterial3D_ground")
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="Ground"]
+shape = SubResource("BoxShape3D_ground")
+
+[node name="Aircraft" parent="." instance=ExtResource("1_aircraft")]
+
+[node name="Camera3D" type="Camera3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 0.866025, 0.5, 0, -0.5, 0.866025, 0, 1005, 1020)
+script = ExtResource("2_camera_script")
+
+[node name="HUD" parent="." instance=ExtResource("3_hud")]
+
+[node name="ReferenceMarkers" type="Node3D" parent="."]
+
+[node name="Marker1000m" type="CSGBox3D" parent="ReferenceMarkers"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1000, -100)
+size = Vector3(50, 2, 50)
+
+[node name="Marker500m" type="CSGBox3D" parent="ReferenceMarkers"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 200, 500, -200)
+size = Vector3(30, 2, 30)
+
+[node name="Marker2000m" type="CSGBox3D" parent="ReferenceMarkers"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -200, 2000, 200)
+size = Vector3(50, 2, 50)

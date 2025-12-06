@@ -1,0 +1,23 @@
+[gd_resource type="Resource" script_class="AircraftData" load_steps=2 format=3]
+
+[ext_resource type="Script" path="res://scripts/aircraft/aircraft_data.gd" id="1_aircraft_data"]
+
+[resource]
+script = ExtResource("1_aircraft_data")
+mass = 2000.0
+wing_area = 20.0
+wing_span = 10.0
+max_thrust = 15000.0
+wep_thrust_multiplier = 1.2
+lift_coefficient = 0.5
+drag_coefficient = 0.03
+induced_drag_factor = 0.05
+pitch_rate = 1.0
+roll_rate = 2.0
+yaw_rate = 0.5
+stall_angle = 15.0
+max_aoa = 20.0
+max_g_force = 8.0
+structural_speed_limit = 250.0
+fuel_capacity = 1000.0
+fuel_consumption = 0.5

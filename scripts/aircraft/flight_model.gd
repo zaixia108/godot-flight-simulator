@@ -53,6 +53,7 @@ func calculate_sideslip(vel: Vector3, right: Vector3) -> float:
 
 ## 计算升力
 ## L = 0.5 * ρ * V² * S * Cl
+## 升力方向应该垂直于速度向量和机翼方向
 func calculate_lift(vel: Vector3, up: Vector3, aoa: float) -> Vector3:
 	if not aircraft_data:
 		return Vector3.ZERO
@@ -74,7 +75,17 @@ func calculate_lift(vel: Vector3, up: Vector3, aoa: float) -> Vector3:
 		cl *= max(0.3, stall_factor)
 	
 	var lift_magnitude = 0.5 * air_density * speed_squared * aircraft_data.wing_area * cl
-	return up * lift_magnitude
+	
+	# 升力方向：垂直于速度向量，朝向飞机上方
+	# 使用速度向量和飞机上方向量的叉乘来计算升力方向
+	var vel_normalized = vel.normalized()
+	var lift_dir = vel_normalized.cross(vel_normalized.cross(up)).normalized()
+	
+	# 如果升力方向无效（速度和上方向共线），则使用up方向
+	if lift_dir.length_squared() < 0.01:
+		lift_dir = up
+	
+	return lift_dir * lift_magnitude
 
 ## 计算阻力
 ## D = 0.5 * ρ * V² * S * Cd
@@ -153,14 +164,14 @@ func calculate_torque(
 	
 	var torque = Vector3.ZERO
 	
-	# 俯仰力矩（绕X轴）
-	torque.x = control_input.y * aircraft_data.pitch_rate
+	# 俯仰力矩（绕X轴）- 取负值以匹配Godot坐标系
+	torque.x = -control_input.y * aircraft_data.pitch_rate
 	
-	# 滚转力矩（绕Z轴）
-	torque.z = control_input.x * aircraft_data.roll_rate
+	# 滚转力矩（绕Z轴）- 取负值以匹配Godot坐标系
+	torque.z = -control_input.x * aircraft_data.roll_rate
 	
-	# 偏航力矩（绕Y轴）
-	torque.y = control_input.z * aircraft_data.yaw_rate
+	# 偏航力矩（绕Y轴）- 取负值以匹配Godot坐标系
+	torque.y = -control_input.z * aircraft_data.yaw_rate
 	
 	# 添加阻尼以防止过度旋转
 	var damping = 0.5

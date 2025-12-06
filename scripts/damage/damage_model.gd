@@ -41,7 +41,7 @@ func damage_component(component: String, damage: float) -> void:
 		"fuselage":
 			fuselage_health = max(0.0, fuselage_health - damage)
 	
-	emit_signal("component_damaged", component, get_component_health(component))
+	component_damaged.emit(component, get_component_health(component))
 	update_performance_modifiers()
 	check_destruction()
 
@@ -83,7 +83,7 @@ func start_fire() -> void:
 	if not is_on_fire:
 		is_on_fire = true
 		fire_intensity = 0.3
-		emit_signal("fire_started")
+		fire_started.emit()
 		print("警告: 发动机起火!")
 
 ## 更新火灾状态
@@ -105,14 +105,14 @@ func extinguish_fire() -> void:
 	if is_on_fire:
 		is_on_fire = false
 		fire_intensity = 0.0
-		emit_signal("fire_extinguished")
+		fire_extinguished.emit()
 		print("火势已扑灭")
 
 ## 检查是否完全毁坏
 func check_destruction() -> void:
 	# 关键部件损坏超过临界值时飞机毁坏
 	if fuselage_health <= 0.0 or (left_wing_health <= 0.0 and right_wing_health <= 0.0):
-		emit_signal("aircraft_destroyed")
+		aircraft_destroyed.emit()
 		print("飞机已毁坏!")
 
 ## 修复所有部件（用于测试）

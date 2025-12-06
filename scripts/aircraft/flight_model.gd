@@ -124,7 +124,7 @@ func calculate_total_force(
 	throttle: float,
 	use_wep: bool = false
 ) -> Vector3:
-	var forward = transform_basis.z
+	var forward = -transform_basis.z  # 飞机朝向-Z方向，所以前进方向是-Z
 	var up = transform_basis.y
 	var right = transform_basis.x
 	
